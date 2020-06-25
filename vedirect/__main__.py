@@ -30,7 +30,7 @@ def main():
 
     if not args.print_only:
         global influx_db, influx_client
-        influx_client = InfluxDBClient(host=args.influx, port=8086)
+        influx_client = InfluxDBClient(host=args.influx, port=8086, timeout=5)
         influx_db = args.database
 
     ve = Vedirect(args.port)
