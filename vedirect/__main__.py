@@ -42,11 +42,13 @@ def mean(nums):
 def on_victron_data_callback(data):
     global lastsend, args
     diff = datetime.datetime.now()-lastsend
+    if diff.seconds > (2 * args.send_interval):
+        print ("Gap of:",diff)
     if diff.seconds > args.send_interval:
         measurements = influx.measurements_for_packet(data)
         if not args.print_only:
             influx_client.write_points(measurements, database=influx_db)
-        print(measurements)
+        #print(measurements)
         lastsend=datetime.datetime.now()
     else:
         #print ("Skipped measurement")
