@@ -166,4 +166,5 @@ class Vedirect:
                 if packet is not None:
                     callback(packet)
             else:
+                print("read returned no bytes!!.. breaking")
                 break
