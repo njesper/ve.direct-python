@@ -1,0 +1,74 @@
+mqtt:
+  host: 127.0.0.1
+  port: 1883
+  username: "x"
+  password: "xx"
+
+influxdb:
+  host: 127.0.0.1
+  port: 8086
+  database: testsonoff
+
+points:
+  - measurement: sensor
+    topic: v1/bob/ambient
+    fields:
+       temperature_c:
+         value: $.payload.temperature
+         type: "float"
+       humidity:
+         value: $.payload.humidity
+         type: "float"
+    tags:
+      id: bob-AHT20
+  - measurement: solartest
+    topic: bob/victron/mppt/power
+    tags:
+      sensor: victron
+      location: outdoors
+    fields:
+      V:
+        value: $.payload.V
+        type: "float"
+      VPV:
+        value: $.payload.VPV
+        type: "float"
+      PPV:
+        value: $.payload.PPV
+        type: "int"
+      IL:
+        value: $.payload.IL
+        type: "int"
+      I:
+        value: $.payload.IL
+        type: "int"
+  - measurement: solartest
+    topic: bob/victron/mppt/today
+    tags:
+      sensor: victron
+      location: outdoors
+    fields:
+      H20:
+        value: $.payload.H20
+        type: "float"
+      H21:
+        value: $.payload.H21
+        type: "int"
+  - measurement: solartest
+    topic: bob/victron/mppt/status
+    tags:
+      sensor: victron
+      location: outdoors
+    fields:
+      LOAD:
+        value: $.payload.LOAD
+        type: "int"
+      CS:
+        value: $.payload.CS
+        type: "int"
+      MPPT:
+        value: $.payload.MPPT
+        type: "int"
+      ERR:
+        value: $.payload.ERR
+        type: "int"
