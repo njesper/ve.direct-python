@@ -5,6 +5,29 @@ import argparse
 from vedirect.vedirect import Vedirect
 import paho.mqtt.client as mqtt
 
+
+victron_key_map = {
+    'LOAD': 'state/LOAD',
+    'CS': 'state/SC',
+    'MPPT': 'state/MPPT',
+    'ERR': 'state/ERR',
+    #'H19': 'total/yield',
+    'H20': 'today/H20',
+    'H21': 'today/H21',
+    #'H23': 'yesterday/max-power',
+    #'H22': 'yesterday/yield',
+    'V': 'power/V',
+    'VPV': 'power/VPV',
+    'PPV': 'power/PPV'
+    'IL': 'power/IL',
+    'I': 'power/I',
+    #'FW': 'system/firmware',
+    #'PID': 'system/pid',
+    #'HSDS': 'system/day-seq',
+    #'SER#': 'system/serial-no',
+}
+
+'''
 victron_key_map = {
     'LOAD': 'now/battery-state',
     'H19': 'total/yield',
@@ -25,10 +48,11 @@ victron_key_map = {
     'H22': 'yesterday/yield',
     'PPV': 'now/pv-power'
 }
+'''
 
 class Connector:
 
-    def __init__(self, broker, client_id, mqtt_user=None, mqtt_password=None, base_topic='victron/mppt/', serial='/dev/ttyAMA0'):
+    def __init__(self, broker, client_id, mqtt_user=None, mqtt_password=None, base_topic='bob/victron/mppt/', serial='/dev/ttyAMA0'):
         self.base_topic = base_topic
 
         self.mqttc = mqtt.Client(client_id)
@@ -53,12 +77,12 @@ class Connector:
             # else:
             #     previous_victron_frame[key] = value
 
-            if key == 'CS':
-                value = Vedirect.VICTRON_CS[value]
-            elif key == 'MPPT':
-                value = Vedirect.VICTRON_CS[value]
-            elif key == 'ERR':
-                value = Vedirect.VICTRON_ERROR[value]
+            #if key == 'CS':
+            #    value = Vedirect.VICTRON_CS[value]
+            #elif key == 'MPPT':
+            #    value = Vedirect.VICTRON_MTTP[value]
+            #elif key == 'ERR':
+            #    value = Vedirect.VICTRON_ERROR[value]
 
             key = self.base_topic + victron_key_map[key]
             self.mqttc.publish(key, value)
