@@ -37,11 +37,14 @@ def main():
 
     if not args.print_only:
         if args.influx:
+            print("Influx init...")
             global influx_db, influx_client
             influx_client = InfluxDBClient(host=args.influx, port=8086, timeout=5)
             influx_db = args.database
         if args.broker:
-            mqtt_client = mqtt.Client(client_id)
+            global mqtt_client
+            print("MQTT init...")
+            mqtt_client = mqtt.Client(args.client_id)
             if args.username is not None and args.password is not None:
                 mqtt_client.username_pw_set(args.username, args.password)
             mqtt_client.connect(args.broker)
@@ -69,7 +72,8 @@ def on_victron_data_callback(data):
                     mqtt_client.publish('bob/victron/mppt/'+m['measurement'],json.dumps(m['fields']),1)
         if args.print_only:
             print(measurements)
-            print("MQTT:",'bob/victron/mppt/'+m['measurement'],json.dumps(m['fields']))
+            for m in measurements:
+                print("MQTT:",'bob/victron/mppt/'+m['measurement'],json.dumps(m['fields']))
         lastsend=datetime.datetime.now()
     else:
         #print ("Skipped measurement")
