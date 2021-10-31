@@ -7,7 +7,7 @@ mqtt:
 influxdb:
   host: 127.0.0.1
   port: 8086
-  database: testsonoff
+  database: testsolar
 
 points:
   - measurement: sensor
@@ -21,7 +21,7 @@ points:
          type: "float"
     tags:
       id: bob-AHT20
-  - measurement: solartest
+  - measurement: solar-power
     topic: bob/victron/mppt/power
     tags:
       sensor: victron
@@ -42,7 +42,7 @@ points:
       I:
         value: $.payload.IL
         type: "int"
-  - measurement: solartest
+  - measurement: solar-today
     topic: bob/victron/mppt/today
     tags:
       sensor: victron
@@ -54,7 +54,7 @@ points:
       H21:
         value: $.payload.H21
         type: "int"
-  - measurement: solartest
+  - measurement: solar-status
     topic: bob/victron/mppt/status
     tags:
       sensor: victron
