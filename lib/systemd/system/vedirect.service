@@ -4,11 +4,11 @@ After=multi-user.target
 
 [Service]
 Type=simple
-User=pi
-Group=pi
-WorkingDirectory=/home/pi/ve.direct-python
-EnvironmentFile=/home/pi/ve.direct-python/.env.installed
-ExecStart=/usr/bin/python3 -u -m vedirect --influx=${INFLUX_HOST} --database=${INFLUX_DB} --port=${SERIAL_PORT} --send-interval=${SEND_INTERVAL}
+User=bjoern
+Group=bjoern
+WorkingDirectory=/home/bjoern/ve.direct-python
+EnvironmentFile=/home/bjoern/ve.direct-python/.env.installed
+ExecStart=/usr/bin/python3 -u -m vedirect --influx=${INFLUX_HOST} --database=${INFLUX_DB} --port=${SERIAL_PORT} --send-interval=${SEND_INTERVAL} --broker=${MQTT_BROKER_IP} --client-id=${MQTT_CLIENT_ID} --username=${MQTT_USERNAME} --password=${MQTT_PASSWORD}
 RestartSec=5s
 Restart=always
 
