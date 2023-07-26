@@ -48,7 +48,7 @@ def on_victron_data_callback(data):
         measurements = influx.measurements_for_packet(data)
         if not args.print_only:
             influx_client.write_points(measurements, database=influx_db)
-        #print(measurements)
+        print(measurements)
         lastsend=datetime.datetime.now()
     else:
         #print ("Skipped measurement")
