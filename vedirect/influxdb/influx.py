@@ -31,21 +31,33 @@ def measurements_for_packet(data):
         'I'  # Battery current (mA)
     ]
 
-    battery_sts_keys = [
-        'H7', # Minimum main (battery) voltage (mV)
-        'H8', # Maximum main (battery) voltage (mV)
-        'H9', # Number of seconds since last full charge
-        'H17',# Amount of discharged energy (0.01 kWh)
-        'H18' # Amount of charged energy (0.01 kWh) 
-    ]
-
-    measurement_powerkeys = [
+    battery_status_keys = [
         'V',  # Battery voltage (mV)
+        'VS', # Auxiliary (starter) voltage (mV)
         'I',  # Battery current (mA)
         'P',  # Instantaneous power (W)
         'CE', # Consumed Amp Hours (mAh)
         'SOC',# State-of-charge (%o)
-        'TTG' # Time-to-go (min)
+        'TTG',# Time-to-go (min)
+        'Alarm',# Alarm condition active
+        'Relay',# Relay state
+        'AR', # Alarm reason
+        'H1', # Depth of the deepest discharge
+        'H2', # Depth of the last discharge
+        'H3', # Depth of the average discharge
+        'H4', # Number of charge cycles
+        'H5', # Number of full discharges
+        'H6', # Cumulative Amp Hours drawn
+        'H7', # Minimum main (battery) voltage (mV)
+        'H8', # Maximum main (battery) voltage (mV)
+        'H9', # Number of seconds since last full charge
+        'H10',# Number of automatic synchronizations 
+        'H11',# Number of low main voltage alarms
+        'H12',# Number of high main voltage alarms
+        'H15',# Minimum auxiliary (battery) voltage (mV)
+        'H16',# Maximum auxiliary (battery) voltage (mV)
+        'H17',# Amount of discharged energy (0.01 kWh)
+        'H18' # Amount of charged energy (0.01 kWh) 
     ]
 
     measure_base = {
@@ -60,14 +72,9 @@ def measurements_for_packet(data):
 
     measurements = []
 
-    power_measurement = deepcopy(measure_base)
-    power_measurement['measurement'] = 'power'
-    power_measurement['fields'] = {key: process_keys(key, data[key]) for key in measurement_powerkeys}
-    measurements.append(power_measurement)
-
     battery_measurement = deepcopy(measure_base)
     battery_measurement['measurement'] = 'battery'
-    battery_measurement['fields'] = {key: process_keys(key, data[key]) for key in battery_sts_keys}
+    battery_measurement['fields'] = {key: process_keys(key, data[key]) for key in battery_status_keys}
     measurements.append(battery_measurement)
 
 #    power_measurement = deepcopy(measure_base)
@@ -88,7 +95,7 @@ def measurements_for_packet(data):
     return measurements
 
 def process_keys(key, value):
-    if key == 'V' or key == 'VPV' or key == 'H8' or key == 'H7':  # mV -> V
+    if key == 'V' or key == 'VS' or key == 'VPV' or key == 'H8' or key == 'H7' or key == 'H15' or key == 'H16':  # mV -> V
         return float(value) / 1000
     elif key == 'IL' or key == 'I':
          return int(value)  # mA
@@ -96,13 +103,13 @@ def process_keys(key, value):
         return int(value)
     elif key == 'H20' or key == 'H18' or key == 'H17':  # 0.01Kw -> Kw
         return float(value) / 100
-    elif key == 'CS' or key == 'CE' or key == 'SOC' or key == 'TTG' or key == 'H9':
+    elif key == 'CS' or key == 'CE' or key == 'SOC' or key == 'TTG' or key == 'H1' or key == 'H2' or key == 'H3' or key == 'H4' or key == 'H5' or key == 'H6' or key == 'H9' or key == 'H10' or key == 'H11' or key == 'H12':
         return int(value)  # vedirect.Vedirect.VICTRON_CS[value]
     elif key == 'MPPT':
         return int(value)  # vedirect.Vedirect.VICTRON_MTTP[value]
-    elif key == 'ERR':
+    elif key == 'ERR' or key == 'AR':
         return int(value)  # vedirect.Vedirect.VICTRON_ERROR[value]
-    elif key == 'LOAD':
+    elif key == 'LOAD' or key == 'Alarm' or key == 'Relay':
         return 1 if value == 'ON' else 0  # ON / OFF
     else:
         raise ValueError('Unable to parse key')
